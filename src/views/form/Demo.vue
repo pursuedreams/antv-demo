@@ -173,11 +173,65 @@ export default {
     // this._getCompanyList()
     // this._queryDeviceListByStationId()
 
-    this.onShow('add', {})
+		this.onShow('edit', {
+			tipTimePeriods: [
+				{
+				startTime: '00:00',
+				endTime: '00:30'
+				},
+				{
+				startTime: '00:00',
+				endTime: '00:30'
+				}
+			],
+			peakTimePeriods: [
+				{
+				startTime: '00:30',
+				endTime: '10:30'
+				}
+			],
+			flatTimePeriods: [
+				{
+				startTime: '10:30',
+				endTime: '18:30'
+				}
+			],
+			valleyTimePeriods: [
+				{
+				startTime: '18:30',
+				endTime: '23:30'
+				}
+			],
+			tipPrice: 10,
+			peakPrice: 5,
+			flatPrice: 8,
+			valleyPrice: 9
+		})
   },
   mounted () {
+		this.computedHours()
   },
    methods: {
+			computedHours () {
+			const arrList = [
+			['00:00-00:30', '00:30-08:00'],
+			['08:00-12:30', '12:30-13:00'],
+			['13:00-15:30', '15:30-19:00'],
+			['19:00-20:30', '20:30-24:00']
+			]
+
+			let hours = 0
+			arrList.forEach(area => {
+				area.forEach(item => {
+					// eslint-disable-next-line prefer-const
+					let [start, end] = item.split('-')
+					end = end === '00:00' ? '24:00' : end
+					const asHours = moment.duration(moment(end, 'HH:mm') - moment(start, 'HH:mm'), 'ms').asHours()
+					hours += asHours
+				})
+			})
+			console.log(hours, '===========hours')
+			},
       onChange (time, timeString) {
         console.log(time, timeString)
       },
